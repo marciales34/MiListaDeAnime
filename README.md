@@ -34,14 +34,6 @@ Esta aplicación te permite:
 
 ---
 
-## 🌸 Capturas de pantalla
-
-| Web 🖥️ | Móvil 📱 |
-|--------|----------|
-| ![Desktop](https://via.placeholder.com/400x250?text=Vista+PC) | ![Mobile](https://via.placeholder.com/200x400?text=Vista+Movil) |
-
----
-
 ## 🔧 Tecnologías utilizadas
 
 - 🧙‍♂️ HTML5
