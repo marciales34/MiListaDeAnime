@@ -170,17 +170,6 @@
 
 <body>
 
-  <script>
-    const password = "Godie123456";
-    let entered = prompt("Ingresa la contraseña para ver tu lista de anime:");
-
-    if (entered === password) {
-      document.getElementById("contenido").style.display = "block";
-    } else {
-      document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Acceso denegado<br>Contraseña incorrecta.</h2>";
-    }
-  </script>
-
   <div id="contenido">
   <div class="background-images">
     <img src="img/img1.png" style="top: 5%; left: 10%; --angle: 5deg;">
@@ -292,6 +281,17 @@
   </script>
 
   </div>
+
+    <script>
+    const password = "Godie123456";
+    let entered = prompt("Ingresa la contraseña para ver tu lista de anime:");
+
+    if (entered === password) {
+      document.getElementById("contenido").style.display = "block";
+    } else {
+      document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Acceso denegado<br>Contraseña incorrecta.</h2>";
+    }
+  </script>
 
 
 </body>
