@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/png" href="img/montana.png">
 
   <title>Lista de Animes</title>
@@ -113,9 +114,11 @@
     .pendiente {
       background-color: rgba(255, 255, 255, 0.85) !important;
     }
+
     .viendo {
       background-color: rgba(208, 230, 255, 0.85) !important;
     }
+
     .visto {
       background-color: rgba(208, 255, 214, 0.85) !important;
     }
@@ -129,44 +132,52 @@
     }
 
     /* Responsive para imágenes de fondo en celular */
-   @media (max-width: 480px) {
-  .background-images img {
-    width: 100px;
-    opacity: 0.1;
-  }
+    @media (max-width: 480px) {
+      .background-images img {
+        width: 100px;
+        opacity: 0.1;
+      }
 
-  .anime-card {
-    width: 95%;
-    padding: 12px;
-    gap: 6px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
+      .anime-card {
+        width: 95%;
+        padding: 12px;
+        gap: 6px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-  .title {
-    font-size: 16px;
-  }
+      .title {
+        font-size: 16px;
+      }
 
-  .estado-select {
-    font-size: 14px;
-  }
-}
+      .estado-select {
+        font-size: 14px;
+      }
+    }
 
-@media (max-width: 768px) {
-  .background-images img {
-    width: 180px;
-    opacity: 0.12;
-  }
+    @media (max-width: 768px) {
+      .background-images img {
+        width: 180px;
+        opacity: 0.12;
+      }
 
-  .anime-card {
-    width: 95%;
-  }
-}
-
-
+      .anime-card {
+        width: 95%;
+      }
+    }
   </style>
 </head>
+
 <body>
+
+  <script>
+    const password = "Godie123456"; 
+    let entered = prompt("Ingresa la contraseña para ver tu lista de anime:");
+
+    if (entered !== password) {
+      document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Acceso denegado<br>Contraseña incorrecta.</h2>";
+    }
+  </script>
 
   <div class="background-images">
     <img src="img/img1.png" style="top: 5%; left: 10%; --angle: 5deg;">
@@ -216,7 +227,7 @@
     async function renderLista() {
       animeList.innerHTML = "";
       const querySnapshot = await getDocs(collection(db, "animes"));
-      
+
       let animes = [];
       querySnapshot.forEach(docSnapshot => {
         const anime = docSnapshot.data();
@@ -278,4 +289,5 @@
   </script>
 
 </body>
+
 </html>
