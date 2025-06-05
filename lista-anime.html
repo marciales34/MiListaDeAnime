@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/png" href="img/montana.png">
+
+  <title>Lista de Animes</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fffaf0;
+      color: #2d2d2d;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .background-images {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .background-images img {
+      position: absolute;
+      width: 300px;
+      height: auto;
+      opacity: 0.15;
+      object-fit: contain;
+      transform: rotateZ(var(--angle, 0deg));
+    }
+
+    h1 {
+      text-align: center;
+      color: #5c4d3b;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fdf6e3;
+      color: #333;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #b8936c;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #8c6e4f;
+    }
+
+    .anime-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .anime-card {
+      background-color: rgba(255, 255, 255, 0.85);
+      width: 90%;
+      max-width: 500px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .estado-select {
+      padding: 6px;
+      border-radius: 8px;
+      border: none;
+      background-color: #eee;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .pendiente {
+      background-color: rgba(255, 255, 255, 0.85) !important;
+    }
+    .viendo {
+      background-color: rgba(208, 230, 255, 0.85) !important;
+    }
+    .visto {
+      background-color: rgba(208, 255, 214, 0.85) !important;
+    }
+
+    @media (max-width: 600px) {
+      .anime-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+
+    /* Responsive para imágenes de fondo en celular */
+   @media (max-width: 480px) {
+  .background-images img {
+    width: 100px;
+    opacity: 0.1;
+  }
+
+  .anime-card {
+    width: 95%;
+    padding: 12px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .estado-select {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .background-images img {
+    width: 180px;
+    opacity: 0.12;
+  }
+
+  .anime-card {
+    width: 95%;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+
+  <div class="background-images">
+    <img src="img/img1.png" style="top: 5%; left: 10%; --angle: 5deg;">
+    <img src="img/img2.png" style="top: 5%; left: 62%; --angle: -10deg;">
+    <img src="img/img3.png" style="top: 40%; left: 30%; --angle: 15deg;">
+    <img src="img/img4.png" style="top: 70%; left: 55%; --angle: -5deg;">
+    <img src="img/img5.png" style="top: 35%; left: 57%; --angle: 10deg;">
+    <img src="img/img6.png" style="top: 2%; left: 35%; --angle: -15deg;">
+    <img src="img/img7.png" style="top: 70%; left: 5%; --angle: 20deg;">
+    <img src="img/img8.png" style="top: 75%; left: 30%; --angle: -20deg;">
+    <img src="img/img9.png" style="top: 35%; left: 80%; --angle: 25deg;">
+    <img src="img/img10.png" style="top: 30%; left: 5%; --angle: -25deg;">
+    <img src="img/img11.png" style="top: 70%; left: 80%; --angle: 0deg;">
+    <img src="img/img12.png" style="top: 3%; left: 86%; --angle: 20deg;">
+  </div>
+
+  <h1>🎌 Mi Lista de Anime 🎌</h1>
+
+  <form id="animeForm">
+    <input type="text" id="animeInput" placeholder="Agregar anime...">
+    <button type="submit">Agregar</button>
+  </form>
+
+  <div class="anime-list" id="animeList"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZREuJG5uxyU8f14HgN9PahXVvCeCUYxE",
+      authDomain: "anime-da161.firebaseapp.com",
+      projectId: "anime-da161",
+      storageBucket: "anime-da161.appspot.com",
+      messagingSenderId: "419282579591",
+      appId: "1:419282579591:web:5b6964b0c0f08715ab4822",
+      measurementId: "G-X67ZPWM8LH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const animeForm = document.getElementById("animeForm");
+    const animeInput = document.getElementById("animeInput");
+    const animeList = document.getElementById("animeList");
+
+    async function renderLista() {
+      animeList.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "animes"));
+      
+      let animes = [];
+      querySnapshot.forEach(docSnapshot => {
+        const anime = docSnapshot.data();
+        anime.id = docSnapshot.id;
+        animes.push(anime);
+      });
+
+      // Orden: viendo primero, luego pendiente, luego visto
+      animes.sort((a, b) => {
+        const order = { "viendo": 0, "pendiente": 1, "visto": 2 };
+        return order[a.estado] - order[b.estado];
+      });
+
+      animes.forEach(anime => {
+        const card = document.createElement("div");
+        card.className = `anime-card ${anime.estado}`;
+
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = anime.nombre;
+
+        // NO botón eliminar (lo removí según tu pedido)
+
+        const select = document.createElement("select");
+        select.className = `estado-select ${anime.estado}`;
+        select.innerHTML = `
+          <option value="pendiente">Pendiente</option>
+          <option value="viendo">Viendo</option>
+          <option value="visto">Visto</option>
+        `;
+        select.value = anime.estado;
+        select.addEventListener("change", async (e) => {
+          await updateDoc(doc(db, "animes", anime.id), {
+            estado: e.target.value,
+          });
+          renderLista();
+        });
+
+        card.appendChild(title);
+        card.appendChild(select);
+        animeList.appendChild(card);
+      });
+    }
+
+    animeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nombre = animeInput.value.trim();
+      if (nombre !== "") {
+        await addDoc(collection(db, "animes"), {
+          nombre,
+          estado: "pendiente"
+        });
+        animeInput.value = "";
+        renderLista();
+      }
+    });
+
+    renderLista();
+  </script>
+
+</body>
+</html>
