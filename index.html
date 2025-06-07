@@ -187,6 +187,8 @@
   </div>
 
   <h1>🎌 Mi Lista de Anime 🎌</h1>
+  <div id="contador" style="text-align:center; font-weight:bold; margin-bottom: 20px;"></div>
+
 
   <form id="animeForm">
     <input type="text" id="animeInput" placeholder="Agregar anime...">
@@ -217,52 +219,60 @@
     const animeList = document.getElementById("animeList");
 
     async function renderLista() {
-      animeList.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "animes"));
+  animeList.innerHTML = "";
+  const querySnapshot = await getDocs(collection(db, "animes"));
 
-      let animes = [];
-      querySnapshot.forEach(docSnapshot => {
-        const anime = docSnapshot.data();
-        anime.id = docSnapshot.id;
-        animes.push(anime);
+  let animes = [];
+  let contador = { visto: 0, viendo: 0, pendiente: 0 };
+
+  querySnapshot.forEach(docSnapshot => {
+    const anime = docSnapshot.data();
+    anime.id = docSnapshot.id;
+    animes.push(anime);
+    contador[anime.estado]++;
+  });
+
+  // Ordenar
+  animes.sort((a, b) => {
+    const order = { "viendo": 0, "pendiente": 1, "visto": 2 };
+    return order[a.estado] - order[b.estado];
+  });
+
+  // Mostrar contador
+  document.getElementById("contador").innerHTML = `
+    ✅ Vistos: ${contador.visto} | 👁️ Viendo: ${contador.viendo} | 🕒 Pendientes: ${contador.pendiente}
+  `;
+
+  // Crear tarjetas
+  animes.forEach(anime => {
+    const card = document.createElement("div");
+    card.className = `anime-card ${anime.estado}`;
+
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = anime.nombre;
+
+    const select = document.createElement("select");
+    select.className = `estado-select ${anime.estado}`;
+    select.innerHTML = `
+      <option value="pendiente">Pendiente</option>
+      <option value="viendo">Viendo</option>
+      <option value="visto">Visto</option>
+    `;
+    select.value = anime.estado;
+    select.addEventListener("change", async (e) => {
+      await updateDoc(doc(db, "animes", anime.id), {
+        estado: e.target.value,
       });
+      renderLista(); // vuelve a contar y renderizar
+    });
 
-      // Orden: viendo primero, luego pendiente, luego visto
-      animes.sort((a, b) => {
-        const order = { "viendo": 0, "pendiente": 1, "visto": 2 };
-        return order[a.estado] - order[b.estado];
-      });
+    card.appendChild(title);
+    card.appendChild(select);
+    animeList.appendChild(card);
+  });
+}
 
-      animes.forEach(anime => {
-        const card = document.createElement("div");
-        card.className = `anime-card ${anime.estado}`;
-
-        const title = document.createElement("div");
-        title.className = "title";
-        title.textContent = anime.nombre;
-
-        // NO botón eliminar (lo removí según tu pedido)
-
-        const select = document.createElement("select");
-        select.className = `estado-select ${anime.estado}`;
-        select.innerHTML = `
-          <option value="pendiente">Pendiente</option>
-          <option value="viendo">Viendo</option>
-          <option value="visto">Visto</option>
-        `;
-        select.value = anime.estado;
-        select.addEventListener("change", async (e) => {
-          await updateDoc(doc(db, "animes", anime.id), {
-            estado: e.target.value,
-          });
-          renderLista();
-        });
-
-        card.appendChild(title);
-        card.appendChild(select);
-        animeList.appendChild(card);
-      });
-    }
 
     animeForm.addEventListener("submit", async (e) => {
       e.preventDefault();
