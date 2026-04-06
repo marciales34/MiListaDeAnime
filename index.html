@@ -235,15 +235,22 @@
   });
 
       //seleccion de anime al azar estando en pendiente
-    randomBtn.addEventListener("click", async () => {
+   const randomBtn = document.getElementById("randomBtn");
+
+randomBtn.addEventListener("click", async () => {
   const querySnapshot = await getDocs(collection(db, "animes"));
 
   let pendientes = [];
+  let pendientesDocs = [];
 
   querySnapshot.forEach(docSnapshot => {
     const anime = docSnapshot.data();
     if (anime.estado === "pendiente") {
       pendientes.push(anime.nombre);
+      pendientesDocs.push({
+        id: docSnapshot.id,
+        ...anime
+      });
     }
   });
 
@@ -252,9 +259,19 @@
     return;
   }
 
-  const randomAnime = pendientes[Math.floor(Math.random() * pendientes.length)];
+  const randomIndex = Math.floor(Math.random() * pendientes.length);
+  const randomAnime = pendientesDocs[randomIndex];
 
-  alert("🎬 Te recomendamos ver: " + randomAnime);
+  // 🔥 Cambiar automáticamente a "viendo"
+  await updateDoc(doc(db, "animes", randomAnime.id), {
+    estado: "viendo"
+  });
+
+  // 🔔 Mostrar SOLO UNA alerta
+  alert("🎬 Ahora estás viendo: " + randomAnime.nombre);
+
+  // 🔄 Recargar lista
+  renderLista();
 });
 
   // Ordenar
