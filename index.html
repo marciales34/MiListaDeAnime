@@ -210,6 +210,16 @@
     opacity: 1;
   }
 }
+
+    #buscador {
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fdf6e3;
+}
   </style>
 </head>
 
@@ -233,7 +243,7 @@
 
   <h1>🎌 Mi Lista de Anime 🎌</h1>
   <div id="contador" style="text-align:center; font-weight:bold; margin-bottom: 20px;"></div>
-
+  <input type="text" id="buscador" placeholder="🔍 Buscar anime..."/>
 
   <form id="animeForm">
     <button type="button" id="randomBtn">🎲 Elegir anime aleatorio</button>
@@ -264,12 +274,14 @@
     const animeInput = document.getElementById("animeInput");
     const animeList = document.getElementById("animeList");
     const randomBtn = document.getElementById("randomBtn");
+    const buscador = document.getElementById("buscador");
 
     async function renderLista() {
   animeList.innerHTML = "";
   const querySnapshot = await getDocs(collection(db, "animes"));
 
   let animes = [];
+  const textoBusqueda = buscador.value.toLowerCase();
   let contador = { visto: 0, viendo: 0, pendiente: 0 };
 
   querySnapshot.forEach(docSnapshot => {
@@ -331,7 +343,9 @@ randomBtn.addEventListener("click", async () => {
   `;
 
   // Crear tarjetas
-  animes.forEach(anime => {
+  animes
+  .filter(anime => anime.nombre.toLowerCase().includes(textoBusqueda))
+  .forEach(anime => {
     const card = document.createElement("div");
     card.className = `anime-card ${anime.estado}`;
 
@@ -359,12 +373,30 @@ randomBtn.addEventListener("click", async () => {
     animeList.appendChild(card);
   });
 }
+    buscador.addEventListener("input", () => {
+  renderLista();
+});
 
 
     animeForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const nombre = animeInput.value.trim();
+      const nombreLower = nombre.toLowerCase();
       if (nombre !== "") {
+        const querySnapshot = await getDocs(collection(db, "animes"));
+
+let existe = false;
+
+querySnapshot.forEach(doc => {
+  if (doc.data().nombre.toLowerCase() === nombreLower) {
+    existe = true;
+  }
+});
+
+if (existe) {
+  alert("⚠️ Ese anime ya está en tu lista");
+  return;
+}
         await addDoc(collection(db, "animes"), {
           nombre,
           estado: "pendiente"
