@@ -23,7 +23,7 @@ Esta aplicación te permite:
 ## 📦 Cómo usar esta app
 
 1. Abre este enlace:  
-   🔗 **[mi-lista-anime.netlify.app](https://TU-LINK-AQUI)** (reemplaza con el tuyo)
+   🔗 https://marciales34.github.io/MiListaDeAnime/
 
 2. Usa el formulario para añadir animes con el nombre y una imagen.
 
