@@ -213,12 +213,13 @@
 
     #buscador {
   padding: 10px;
-  margin-bottom: 20px;
+  font-size: 16px;
   width: 90%;
   max-width: 400px;
-  border-radius: 8px;
   border: 1px solid #ccc;
+  border-radius: 8px;
   background: #fdf6e3;
+  color: #333;
 }
   </style>
 </head>
@@ -243,9 +244,9 @@
 
   <h1>🎌 Mi Lista de Anime 🎌</h1>
   <div id="contador" style="text-align:center; font-weight:bold; margin-bottom: 20px;"></div>
-  <input type="text" id="buscador" placeholder="🔍 Buscar anime..."/>
 
   <form id="animeForm">
+    <input type="text" id="buscador" placeholder="🔍 Buscar anime..."/>
     <button type="button" id="randomBtn">🎲 Elegir anime aleatorio</button>
     <input type="text" id="animeInput" placeholder="Agregar anime...">
     <button type="submit">Agregar</button>
