@@ -277,6 +277,38 @@
     const randomBtn = document.getElementById("randomBtn");
     const buscador = document.getElementById("buscador");
 
+    randomBtn.addEventListener("click", async () => {
+  const querySnapshot = await getDocs(collection(db, "animes"));
+
+  let pendientesDocs = [];
+
+  querySnapshot.forEach(docSnapshot => {
+    const anime = docSnapshot.data();
+    if (anime.estado === "pendiente") {
+      pendientesDocs.push({
+        id: docSnapshot.id,
+        ...anime
+      });
+    }
+  });
+
+  if (pendientesDocs.length === 0) {
+    alert("No tienes animes pendientes 😅");
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * pendientesDocs.length);
+  const randomAnime = pendientesDocs[randomIndex];
+
+  await updateDoc(doc(db, "animes", randomAnime.id), {
+    estado: "viendo"
+  });
+
+  mostrarModal(randomAnime.nombre);
+
+  renderLista();
+});
+
     async function renderLista() {
   animeList.innerHTML = "";
   const querySnapshot = await getDocs(collection(db, "animes"));
@@ -292,45 +324,6 @@
     contador[anime.estado]++;
   });
 
-      //seleccion de anime al azar estando en pendiente
-   const randomBtn = document.getElementById("randomBtn");
-
-randomBtn.addEventListener("click", async () => {
-  const querySnapshot = await getDocs(collection(db, "animes"));
-
-  let pendientes = [];
-  let pendientesDocs = [];
-
-  querySnapshot.forEach(docSnapshot => {
-    const anime = docSnapshot.data();
-    if (anime.estado === "pendiente") {
-      pendientes.push(anime.nombre);
-      pendientesDocs.push({
-        id: docSnapshot.id,
-        ...anime
-      });
-    }
-  });
-
-  if (pendientes.length === 0) {
-    alert("No tienes animes pendientes 😅");
-    return;
-  }
-
-  const randomIndex = Math.floor(Math.random() * pendientes.length);
-  const randomAnime = pendientesDocs[randomIndex];
-
-  // 🔥 Cambiar automáticamente a "viendo"
-  await updateDoc(doc(db, "animes", randomAnime.id), {
-    estado: "viendo"
-  });
-
-  // 🔔 Mostrar SOLO UNA alerta
-  mostrarModal(randomAnime.nombre);
-
-  // 🔄 Recargar lista
-  renderLista();
-});
 
   // Ordenar
   animes.sort((a, b) => {
