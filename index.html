@@ -191,6 +191,7 @@
 
 
   <form id="animeForm">
+    <button type="button" id="randomBtn">🎲 Elegir anime aleatorio</button>
     <input type="text" id="animeInput" placeholder="Agregar anime...">
     <button type="submit">Agregar</button>
   </form>
@@ -217,6 +218,7 @@
     const animeForm = document.getElementById("animeForm");
     const animeInput = document.getElementById("animeInput");
     const animeList = document.getElementById("animeList");
+    const randomBtn = document.getElementById("randomBtn");
 
     async function renderLista() {
   animeList.innerHTML = "";
@@ -231,6 +233,29 @@
     animes.push(anime);
     contador[anime.estado]++;
   });
+
+      //seleccion de anime al azar estando en pendiente
+    randomBtn.addEventListener("click", async () => {
+  const querySnapshot = await getDocs(collection(db, "animes"));
+
+  let pendientes = [];
+
+  querySnapshot.forEach(docSnapshot => {
+    const anime = docSnapshot.data();
+    if (anime.estado === "pendiente") {
+      pendientes.push(anime.nombre);
+    }
+  });
+
+  if (pendientes.length === 0) {
+    alert("No tienes animes pendientes 😅");
+    return;
+  }
+
+  const randomAnime = pendientes[Math.floor(Math.random() * pendientes.length)];
+
+  alert("🎬 Te recomendamos ver: " + randomAnime);
+});
 
   // Ordenar
   animes.sort((a, b) => {
