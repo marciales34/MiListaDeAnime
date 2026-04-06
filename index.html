@@ -165,6 +165,51 @@
         width: 95%;
       }
     }
+
+    .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #fffaf0;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  width: 80%;
+  max-width: 350px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: aparecer 0.3s ease;
+}
+
+.modal-content h2 {
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+@keyframes aparecer {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
   </style>
 </head>
 
@@ -268,7 +313,7 @@ randomBtn.addEventListener("click", async () => {
   });
 
   // 🔔 Mostrar SOLO UNA alerta
-  alert("🎬 Ahora estás viendo: " + randomAnime.nombre);
+  mostrarModal(randomAnime.nombre);
 
   // 🔄 Recargar lista
   renderLista();
@@ -344,6 +389,25 @@ randomBtn.addEventListener("click", async () => {
       document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Acceso denegado<br>Contraseña incorrecta.</h2>";
     }
   </script>
+
+  <script>
+function mostrarModal(nombre) {
+  document.getElementById("modalAnime").textContent = nombre;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function cerrarModal() {
+  document.getElementById("modal").style.display = "none";
+}
+</script>
+
+  <div id="modal" class="modal">
+  <div class="modal-content">
+    <h2>🎬 Ahora estás viendo</h2>
+    <p id="modalAnime"></p>
+    <button onclick="cerrarModal()">Cerrar</button>
+  </div>
+</div>
 
 
 </body>
